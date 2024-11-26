@@ -179,8 +179,9 @@ const LoginSignupPage = () => {
     const db = getDatabase();
         const phoneSnapshot = await get(query(ref(db, "users"), orderByChild("phone"), equalTo(formData.phone)));
         if (phoneSnapshot.exists()) {
-          alert("This phone number is already in use.");
-          return;
+           setErrors(prev => ({...prev, phone: "This phone number is already in use."}));
+                setLoading(false);
+                return;
         }
 
       const userCredential = await createUserWithEmailAndPassword(
@@ -206,8 +207,12 @@ const LoginSignupPage = () => {
       });
       setPopupStage("gender");
     } catch (error) {
-       setErrors(prev => ({...prev, general: error.message}));
-    } finally {
+          if (error.code === "auth/email-already-in-use") {
+            setErrors(prev => ({...prev, email: "This email is already in use."}));
+          } else {
+            setErrors(prev => ({...prev, general: error.message}));
+          }
+        } finally {
       setLoading(false);
     }
   };
@@ -436,7 +441,9 @@ return (
             <form onSubmit={handleSignUp}>
               <input type="text" name="name" placeholder="Name" onChange={handleInputChange} value={formData.name} required />
               <input type="email" name="email" placeholder="Email" onChange={handleInputChange} value={formData.email} required />
+               {errors.email && <p className="error-message">{errors.email}</p>}
               <input type="tel" name="phone" placeholder="Phone" onChange={handleInputChange} value={formData.phone} />
+              {errors.phone && <p className="error-message">{errors.phone}</p>}
               <input type="number" name="age" placeholder="Age" onChange={handleInputChange} value={formData.age} />
               <input type="password" name="password" placeholder="Password" onChange={handleInputChange} value={formData.password} required />
               {errors.password && <p className="error-message">{errors.password}</p>}
