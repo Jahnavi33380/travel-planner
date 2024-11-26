@@ -211,7 +211,6 @@ const LoginSignupPage = () => {
    try {
      await set(ref(db, `users/${userDetails.id}/interests`), selectedInterests);
      setPopupStage("food");
-     alert("Interests saved successfully!!!");
    } catch (error) {
      console.error("Error saving selected interests : ", error);
    }
@@ -239,7 +238,6 @@ const LoginSignupPage = () => {
        ref(db, `users/${userDetails.id}/foodPreferences`),
        selectedFood
      );
-     alert("Food preferences saved successfully!!!");
      setLoggedIn(true);
    } catch (error) {
      console.error("Error saving food preferences : ", error);
