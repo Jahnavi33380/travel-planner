@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDatabase, ref, get, update } from 'firebase/database';
 import { auth } from './LoginSignupPage/firebase';
-
+import './EditPreferences.css'
 
 const EditPreferences = ({ onClose, userDetails }) => {
   const [interests, setInterests] = useState([]);
@@ -65,40 +65,50 @@ const EditPreferences = ({ onClose, userDetails }) => {
     return (
       <div className="edit-preferences-page">
         <h2>Edit Preferences</h2>
-        <div>
-          <h3>Interests</h3>
-          {interests.map((interest, index) => (
-            <Chip
-              key={index}
-              label={interest}
-              selected={selectedInterests.includes(interest)}
-              onClick={() => {
-                if (selectedInterests.includes(interest)) {
-                  setSelectedInterests(selectedInterests.filter(i => i !== interest));
-                } else {
-                  setSelectedInterests([...selectedInterests, interest]);
-                }
-              }}
-            />
-          ))}
-        </div>
-        <div>
-          <h3>Food Preferences</h3>
-          {foodPreferences.map((food, index) => (
-            <Chip
-              key={index}
-              label={food}
-              selected={selectedFood.includes(food)}
-              onClick={() => {
-                if (selectedFood.includes(food)) {
-                  setSelectedFood(selectedFood.filter(f => f !== food));
-                } else {
-                  setSelectedFood([...selectedFood, food]);
-                }
-              }}
-            />
-          ))}
-        </div>
+           <div>
+                <h3>Interests</h3>
+                {Object.entries(interests).map(([category, items]) => (
+                  <div key={category}>
+                    <h4>{category}</h4>
+                    {items.map((interest, index) => (
+                      <Chip
+                        key={index}
+                        label={interest}
+                        selected={selectedInterests.includes(interest)}
+                        onClick={() => {
+                          if (selectedInterests.includes(interest)) {
+                            setSelectedInterests(selectedInterests.filter(i => i !== interest));
+                          } else {
+                            setSelectedInterests([...selectedInterests, interest]);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+              <div>
+         <h3>Food Preferences</h3>
+           {Object.entries(foodPreferences).map(([category, items]) => (
+             <div key={category}>
+               <h4>{category}</h4>
+               {items.map((food, index) => (
+                 <Chip
+                   key={index}
+                   label={food}
+                   selected={selectedFood.includes(food)}
+                   onClick={() => {
+                     if (selectedFood.includes(food)) {
+                       setSelectedFood(selectedFood.filter(f => f !== food));
+                     } else {
+                       setSelectedFood([...selectedFood, food]);
+                     }
+                   }}
+                 />
+               ))}
+             </div>
+           ))}
+         </div>
         <br/>
         <button onClick={handleSave}>Save Preferences</button>
         <br/>

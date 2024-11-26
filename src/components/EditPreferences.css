@@ -1,7 +1,9 @@
 .edit-preferences-page {
-  padding: 20px;
+  margin-left: 350px;
+  padding: 100px;
   background-color: white;
   min-height: 100vh;
+  width: 50%;
 }
 
 .edit-preferences-page h2 {

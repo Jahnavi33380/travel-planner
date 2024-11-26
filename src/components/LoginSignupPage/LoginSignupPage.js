@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { auth } from "./firebase";
+import { auth, googleProvider } from "./firebase";
+import { signInWithPopup } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -30,6 +31,78 @@ const LoginSignupPage = () => {
   const [selectedFood, setSelectedFood] = useState([]);
   const [errors, setErrors] = useState({});
   const [forgotPassword, setForgotPassword] = useState(false);
+
+
+  const handleGoogleSignUp = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const db = getDatabase();
+      const userId = user.uid;
+
+      await set(ref(db, "users/" + userId), {
+        name: user.displayName,
+        email: user.email,
+        phone: user.phoneNumber || "",
+      });
+
+      setUserDetails({
+        id: userId,
+        name: user.displayName,
+        email: user.email,
+      });
+
+      setPopupStage("gender");
+    } catch (error) {
+      console.error("Error during Google Sign-Up:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      const db = getDatabase();
+      const userId = user.uid;
+
+      const userRef = ref(db, `users/${userId}`);
+      const snapshot = await get(userRef);
+
+      if (snapshot.exists()) {
+        setUserDetails({
+          id: userId,
+          ...snapshot.val()
+        });
+        setLoggedIn(true);
+      } else {
+        await set(userRef, {
+          name: user.displayName,
+          email: user.email,
+          phone: user.phoneNumber || "",
+        });
+
+        setUserDetails({
+          id: userId,
+          name: user.displayName,
+          email: user.email,
+        });
+
+        setPopupStage("gender");
+      }
+    } catch (error) {
+      console.error("Error during Google Sign-In:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -190,7 +263,6 @@ const LoginSignupPage = () => {
     </button>
   );
 
-
  const fetchInterests = async () => {
    const dbRef = ref(getDatabase());
    try {
@@ -308,43 +380,53 @@ return (
           ) : popupStage === "interests" ? (
             <div className="popup">
               <h2>Select Your Interests</h2>
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {interests.map((interest, index) => (
-                  <Chip
-                    key={index}
-                    label={interest}
-                    selected={selectedInterests.includes(interest)}
-                    onClick={() => {
-                      if (selectedInterests.includes(interest)) {
-                        setSelectedInterests(selectedInterests.filter(item => item !== interest));
-                      } else {
-                        setSelectedInterests([...selectedInterests, interest]);
-                      }
-                    }}
-                  />
-                ))}
-              </div>
+              {Object.entries(interests).map(([category, items]) => (
+                <div key={category}>
+                  <h3>{category}</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    {items.map((interest, index) => (
+                      <Chip
+                        key={index}
+                        label={interest}
+                        selected={selectedInterests.includes(interest)}
+                        onClick={() => {
+                          if (selectedInterests.includes(interest)) {
+                            setSelectedInterests(selectedInterests.filter(item => item !== interest));
+                          } else {
+                            setSelectedInterests([...selectedInterests, interest]);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
               <button onClick={handleInterestSelection}>Next</button>
             </div>
           ) : popupStage === "food" ? (
             <div className="popup">
               <h2>Select Your Food Preferences</h2>
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {foodPreferences.map((food, index) => (
-                  <Chip
-                    key={index}
-                    label={food}
-                    selected={selectedFood.includes(food)}
-                    onClick={() => {
-                      if (selectedFood.includes(food)) {
-                        setSelectedFood(selectedFood.filter(item => item !== food));
-                      } else {
-                        setSelectedFood([...selectedFood, food]);
-                      }
-                    }}
-                  />
-                ))}
-              </div>
+              {Object.entries(foodPreferences).map(([category, items]) => (
+                <div key={category}>
+                  <h3>{category}</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    {items.map((food, index) => (
+                      <Chip
+                        key={index}
+                        label={food}
+                        selected={selectedFood.includes(food)}
+                        onClick={() => {
+                          if (selectedFood.includes(food)) {
+                            setSelectedFood(selectedFood.filter(item => item !== food));
+                          } else {
+                            setSelectedFood([...selectedFood, food]);
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
               <button onClick={handleFoodSelection}>Finish</button>
             </div>
           ) : null
@@ -365,6 +447,8 @@ return (
                 {loading ? "Signing Up......" : "Sign Up"}
               </button>
             </form>
+            <br/>
+            <button onClick={handleGoogleSignUp} class="google-btn">Sign Up with Google</button>
             <p>
               Already have an account?{" "}
               <a href="#" onClick={toggleSignUp}>Log In Here</a>
@@ -383,6 +467,10 @@ return (
                 {loading ? "Logging In..." : "Log In"}
               </button>
             </form>
+            <br/>
+            <button onClick={handleGoogleSignIn} disabled={loading} class="google-btn">
+                {loading ? "Signing In..." : "Sign In with Google"}
+              </button>
             <p>
               Don't have an account?{" "}
               <a href="#" onClick={toggleSignUp}>Sign Up Here</a>
