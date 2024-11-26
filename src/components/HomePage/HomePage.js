@@ -16,7 +16,7 @@ const HomePage = ({ userDetails }) => {
       {showEditPreferences ? (
         <EditPreferences onClose={toggleEditPreferences} userDetails={userDetails} />
       ) : (
-        <h1>Welcome to the Home Page, {userDetails.name}!</h1>
+        <h1>Welcome to the Home Page</h1>
       )}
     </div>
   );

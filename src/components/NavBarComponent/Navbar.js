@@ -38,8 +38,15 @@ const Navbar = ({ userDetails, onEditPreferences }) => {
             />
             {dropdownOpen && (
               <div className="dropdown-menu">
-                <Link to="/profile">Profile</Link>
-                  <button onClick={onEditPreferences}>Edit Preferences</button>
+
+                  <Link
+                        to="/preferences"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onEditPreferences();
+                        }}
+                      >Edit Preferences</Link>
+
                 <Link to="/logout">Logout</Link>
               </div>
             )}
