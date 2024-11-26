@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { getDatabase, ref, set, get, child, query, orderByChild, equalTo } from "firebase/database";
 import './LoginSignupPage.css';
+import HomePage from '../../components/HomePage/HomePage'
 
 const LoginSignupPage = () => {
   const [signUp, setSignUp] = useState(false);
@@ -245,239 +246,155 @@ const LoginSignupPage = () => {
    }
  };
 
-
- return (
-   <div id="login-signup">
-     {loading && <p>Loading...</p>}
-     {loggedIn ? (
-       <div className="welcome">
-         <h1>Welcome, {userDetails?.name || "User"}!</h1>
-         <p>Email: {userDetails?.email}</p>
-       </div>
-     ) : forgotPassword ? (
-              <div className="forgot-password">
-                  <h1>Reset Password</h1>
-                  <form onSubmit={sendResetEmail}>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      onChange={handleInputChange}
-                      value={formData.email}
-                      required
-                    />
-                    <button type="submit" disabled={loading}>
-                      {loading ? "Sending..." : "Send Reset Email"}
-                    </button>
-                  </form>
-                  <p>
-                    <a href="#" onClick={() => setForgotPassword(false)}>Back to Login</a>
-                  </p>
-                </div>
-               ) : popupStage ? (
-       popupStage === "gender" ? (
-         <div className="popup">
-           <h2>Select Your Gender</h2>
-           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-             <button
-               onClick={() => setGender("Male")}
-               style={{
-                 backgroundColor: gender === "Male" ? '#007bff' : '#f0f0f0',
-                 color: gender === "Male" ? 'white' : 'black'
-               }}
-             >
-               Male
-             </button>
-             <button
-               onClick={() => setGender("Female")}
-               style={{
-                 backgroundColor: gender === "Female" ? '#007bff' : '#f0f0f0',
-                 color: gender === "Female" ? 'white' : 'black'
-               }}
-             >
-               Female
-             </button>
-             <button
-                            onClick={() => setGender("Non-binary")}
-                            style={{
-                              backgroundColor: gender === "Non-binary" ? '#007bff' : '#f0f0f0',
-                              color: gender === "Non-binary" ? 'white' : 'black'
-                            }}
-                          >
-                            Non-binary
-                          </button>
-             <button
-               onClick={() => setGender("Prefer not to say")}
-               style={{
-                 backgroundColor: gender === "Prefer not to say" ? '#007bff' : '#f0f0f0',
-                 color: gender === "Prefer not to say" ? 'white' : 'black'
-               }}
-             >
-               Prefer not to Say
-             </button>
-           </div>
-           <button
-             onClick={() => handleGenderSelection(gender)}
-             disabled={!gender}
-             style={{
-               padding: '10px 20px',
-               fontSize: '16px',
-               backgroundColor: gender ? '#007bff' : '#cccccc',
-               color: 'white',
-               border: 'none',
-               borderRadius: '5px',
-               cursor: gender ? 'pointer' : 'not-allowed'
-             }}
-           >
-             Next
-           </button>
-         </div>
-       ) : popupStage === "interests" ? (
-             <div className="popup">
-               <h2>Select Your Interests</h2>
-               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                 {interests.map((interest, index) => (
-                   <Chip
-                     key={index}
-                     label={interest}
-                     selected={selectedInterests.includes(interest)}
-                     onClick={() => {
-                       if (selectedInterests.includes(interest)) {
-                         setSelectedInterests(selectedInterests.filter(item => item !== interest));
-                       } else {
-                         setSelectedInterests([...selectedInterests, interest]);
-                       }
-                     }}
-                   />
-                 ))}
-               </div>
-               <button onClick={handleInterestSelection}>Next</button>
-             </div>
-       ) : popupStage === "food" ? (
-             <div className="popup">
-               <h2>Select Your Food Preferences</h2>
-               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                 {foodPreferences.map((food, index) => (
-                   <Chip
-                     key={index}
-                     label={food}
-                     selected={selectedFood.includes(food)}
-                     onClick={() => {
-                       if (selectedFood.includes(food)) {
-                         setSelectedFood(selectedFood.filter(item => item !== food));
-                       } else {
-                         setSelectedFood([...selectedFood, food]);
-                       }
-                     }}
-                   />
-                 ))}
-               </div>
-               <button onClick={handleFoodSelection}>Finish</button>
-             </div>
-       ) : null
-     ) : signUp ? (
-       <div className = "sign-up-form-of-user">
-         <h1>Sign Up</h1>
-         <form onSubmit={handleSignUp}>
-           <input
-             type="text"
-             name="name"
-             placeholder="Name"
-             onChange={handleInputChange}
-             value={formData.name}
-             required
-           />
-           <input
-             type="email"
-             name="email"
-             placeholder="Email"
-             onChange={handleInputChange}
-             value={formData.email}
-             required
-           />
-           <input
-             type="tel"
-             name="phone"
-             placeholder="Phone"
-             onChange={handleInputChange}
-             value={formData.phone}
-           />
-           <input
-             type="number"
-             name="age"
-             placeholder="Age"
-             onChange={handleInputChange}
-             value={formData.age}
-           />
-           <input
-             type="password"
-             name="password"
-             placeholder="Password"
-             onChange={handleInputChange}
-             value={formData.password}
-             required
-           />
-           {errors.password && <p className="error-message">{errors.password}</p>}
-           <input
-             type="password"
-             name="confirmPassword"
-             placeholder="Confirm Password"
-             onChange={handleInputChange}
-             value={formData.confirmPassword}
-             required
-           />
-           {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-               {errors.general && <p className="error-message">{errors.general}</p>}
-           <button type="submit" disabled={loading}>
-             {loading ? "Signing Up......" : "Sign Up"}
-           </button>
-         </form>
-         <p>
-           Already have an account?{" "}
-           <a href="#" onClick={toggleSignUp}>
-             Log In Here
-           </a>
-         </p>
-       </div>
-     ) : (
-       <div className="login">
-         <h1>Log In</h1>
-         <form onSubmit={handleLogin}>
-           <input
-             type="email"
-             name="email"
-             placeholder="Email"
-             onChange={handleInputChange}
-             value={formData.email}
-             required
-           />
-
-           <input
-             type="password"
-             name="password"
-             placeholder="Password"
-             onChange={handleInputChange}
-             value={formData.password}
-             required
-           />
-           <p>
-               <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
-           </p>
-           <button type="submit" disabled={loading}>
-             {loading ? "Logging In..." : "Log In"}
-           </button>
-         </form>
-         <p>
-           Don't have an account?{" "}
-           <a href="#" onClick={toggleSignUp}>
-             Sign Up Here
-           </a>
-         </p>
-       </div>
-     )}
-   </div>
- );
- }
+return (
+  <>
+    {loggedIn ? (
+      <HomePage userDetails={userDetails} />
+    ) : (
+      <div id="login-signup">
+        {loading && <p>Loading...</p>}
+        {forgotPassword ? (
+          <div className="forgot-password">
+            <h1>Reset Password</h1>
+            <form onSubmit={sendResetEmail}>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={handleInputChange}
+                value={formData.email}
+                required
+              />
+              <button type="submit" disabled={loading}>
+                {loading ? "Sending..." : "Send Reset Email"}
+              </button>
+            </form>
+            <p>
+              <a href="#" onClick={() => setForgotPassword(false)}>Back to Login</a>
+            </p>
+          </div>
+        ) : popupStage ? (
+          popupStage === "gender" ? (
+            <div className="popup">
+              <h2>Select Your Gender</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => setGender(option)}
+                    style={{
+                      backgroundColor: gender === option ? '#007bff' : '#f0f0f0',
+                      color: gender === option ? 'white' : 'black'
+                    }}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => handleGenderSelection(gender)}
+                disabled={!gender}
+                style={{
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  backgroundColor: gender ? '#007bff' : '#cccccc',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: gender ? 'pointer' : 'not-allowed'
+                }}
+              >
+                Next
+              </button>
+            </div>
+          ) : popupStage === "interests" ? (
+            <div className="popup">
+              <h2>Select Your Interests</h2>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {interests.map((interest, index) => (
+                  <Chip
+                    key={index}
+                    label={interest}
+                    selected={selectedInterests.includes(interest)}
+                    onClick={() => {
+                      if (selectedInterests.includes(interest)) {
+                        setSelectedInterests(selectedInterests.filter(item => item !== interest));
+                      } else {
+                        setSelectedInterests([...selectedInterests, interest]);
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+              <button onClick={handleInterestSelection}>Next</button>
+            </div>
+          ) : popupStage === "food" ? (
+            <div className="popup">
+              <h2>Select Your Food Preferences</h2>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {foodPreferences.map((food, index) => (
+                  <Chip
+                    key={index}
+                    label={food}
+                    selected={selectedFood.includes(food)}
+                    onClick={() => {
+                      if (selectedFood.includes(food)) {
+                        setSelectedFood(selectedFood.filter(item => item !== food));
+                      } else {
+                        setSelectedFood([...selectedFood, food]);
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+              <button onClick={handleFoodSelection}>Finish</button>
+            </div>
+          ) : null
+        ) : signUp ? (
+          <div className="sign-up-form-of-user">
+            <h1>Sign Up</h1>
+            <form onSubmit={handleSignUp}>
+              <input type="text" name="name" placeholder="Name" onChange={handleInputChange} value={formData.name} required />
+              <input type="email" name="email" placeholder="Email" onChange={handleInputChange} value={formData.email} required />
+              <input type="tel" name="phone" placeholder="Phone" onChange={handleInputChange} value={formData.phone} />
+              <input type="number" name="age" placeholder="Age" onChange={handleInputChange} value={formData.age} />
+              <input type="password" name="password" placeholder="Password" onChange={handleInputChange} value={formData.password} required />
+              {errors.password && <p className="error-message">{errors.password}</p>}
+              <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleInputChange} value={formData.confirmPassword} required />
+              {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+              {errors.general && <p className="error-message">{errors.general}</p>}
+              <button type="submit" disabled={loading}>
+                {loading ? "Signing Up......" : "Sign Up"}
+              </button>
+            </form>
+            <p>
+              Already have an account?{" "}
+              <a href="#" onClick={toggleSignUp}>Log In Here</a>
+            </p>
+          </div>
+        ) : (
+          <div className="login">
+            <h1>Log In</h1>
+            <form onSubmit={handleLogin}>
+              <input type="email" name="email" placeholder="Email" onChange={handleInputChange} value={formData.email} required />
+              <input type="password" name="password" placeholder="Password" onChange={handleInputChange} value={formData.password} required />
+              <p>
+                <a href="#" onClick={handleForgotPassword}>Forgot Password?</a>
+              </p>
+              <button type="submit" disabled={loading}>
+                {loading ? "Logging In..." : "Log In"}
+              </button>
+            </form>
+            <p>
+              Don't have an account?{" "}
+              <a href="#" onClick={toggleSignUp}>Sign Up Here</a>
+            </p>
+          </div>
+        )}
+      </div>
+    )}
+  </>
+); }
 
 export default LoginSignupPage;
 

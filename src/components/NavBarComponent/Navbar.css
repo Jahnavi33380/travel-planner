@@ -1,0 +1,148 @@
+
+.navbar {
+  background: black;
+  color: white;
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 8%
+}
+
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+
+.navbar-logo a {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-logo a:hover {
+  color: #ffeb3b;
+}
+
+
+.navbar-menu ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu li {
+  margin-left: 1.5rem;
+}
+
+.navbar-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar-menu a:hover {
+  color: #ffeb3b;
+}
+
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 0rem;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-user span {
+ margin-right: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+}
+
+.avatar-container {
+margin-right: 2rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  transition: transform 0.3s ease-in-out;
+}
+
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 0;
+  display: none;
+  min-width: 180px;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.dropdown-menu a:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+.avatar-container.dropdown-open .dropdown-menu {
+  display: block;
+}
+
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-menu ul {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .navbar-menu li {
+    margin: 0.5rem 0;
+  }
+}

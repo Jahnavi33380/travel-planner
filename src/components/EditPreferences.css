@@ -1,0 +1,25 @@
+.edit-preferences-page {
+  padding: 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+.edit-preferences-page h2 {
+  margin-bottom: 20px;
+}
+
+.edit-preferences-page button {
+  margin-top: 20px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-preferences-page button:hover {
+  background-color: #0056b3;
+}
