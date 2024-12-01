@@ -9,6 +9,7 @@ import {
 import { getDatabase, ref, set, get, child, query, orderByChild, equalTo } from "firebase/database";
 import './LoginSignupPage.css';
 import HomePage from '../../components/HomePage/HomePage'
+import TravelPlannerPage from "../TravelPlannerComponent/TravelPlannerPage";
 
 const LoginSignupPage = () => {
   const [signUp, setSignUp] = useState(false);
@@ -324,7 +325,8 @@ const LoginSignupPage = () => {
 return (
   <>
     {loggedIn ? (
-      <HomePage userDetails={userDetails} />
+      // <HomePage userDetails={userDetails} />
+      <TravelPlannerPage userDetails={userDetails}/>
     ) : (
       <div id="login-signup">
         {loading && <p>Loading...</p>}
